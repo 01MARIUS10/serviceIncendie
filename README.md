@@ -1,33 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Spline 3D Navigation - Next.js
 
-## Getting Started
+Un projet Next.js avec une navigation 3D interactive utilisant React Spline.
 
-First, run the development server:
+## Fonctionnalités
+
+- 🎮 **Navigation 3D** : Glissez l'objet 3D pour naviguer entre les pages
+- 🖥️ **Server-Side Rendering** : Toutes les pages sont générées côté serveur
+- 🎨 **Tailwind CSS** : Design moderne et responsive
+- ✨ **Animations fluides** : Powered by Framer Motion
+
+## Pages
+
+1. **Accueil** (`/accueil`) - Page d'accueil avec présentation
+2. **Services** (`/services`) - Liste des services proposés
+3. **Contact** (`/contact`) - Formulaire de contact
+
+## Navigation
+
+- **Glissement** : Faites glisser horizontalement pour changer de page
+- **Flèches** : Utilisez les boutons ← → sur les côtés
+- **Clavier** : Utilisez les touches flèches gauche/droite
+- **Indicateurs** : Cliquez sur les points en bas
+
+## Installation
+
+```bash
+npm install @splinetool/react-spline @splinetool/runtime framer-motion
+```
+
+## Développement
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Technologies
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [Next.js](https://nextjs.org/)
+- [React](https://react.dev/)
+- [Spline](https://spline.design/) - Objets 3D
+- [Framer Motion](https://www.framer.com/motion/) - Animations
+- [Tailwind CSS](https://tailwindcss.com/) - Styling
 
-## Learn More
+## Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/
+│   ├── page.tsx          # Page principale avec navigation 3D
+│   ├── HomeClient.tsx    # Client component pour la navigation
+│   ├── accueil/page.tsx  # Page Accueil (SSR)
+│   ├── services/page.tsx # Page Services (SSR)
+│   └── contact/page.tsx  # Page Contact (SSR)
+├── components/
+│   ├── NavigationSlider.tsx  # Composant de navigation
+│   └── SplineScene.tsx       # Scene Spline 3D
+└── lib/
+    └── data.ts           # Données des pages (SSR)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Note
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+La scène Spline utilise une URL de démonstration. Pour personnaliser l'objet 3D :
+1. Créez votre scène sur [Spline](https://spline.design/)
+2. Exportez votre scène et copiez l'URL
+3. Remplacez l'URL dans `src/components/SplineScene.tsx`
 
 ## Deploy on Vercel
 
