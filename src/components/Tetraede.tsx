@@ -1,333 +1,229 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useRef, useCallback, use } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { getPageById, getFaceInfo, PageData } from '@/lib/data';
+import dynamic from 'next/dynamic';
+
+const ShaderFire = dynamic(() => import('./ShaderFire'), { ssr: false });
 
 interface TetraedeProps {
   page: PageData | null;
 }
 
 export default function Tetraede({ page = null }: TetraedeProps) {
-  const [rotationX, setRotationX] = useState(0);
-  const [rotationY, setRotationY] = useState(0);
+  // Calcul des cibles pour éviter le flash de la face 0
+  const faceRotations = [
+    { x: -26, y: 51 }, { x: 0, y: 0 }, { x: 0, y: -120 }, { x: 0, y: 120 }, { x: -90, y: 0 }
+  ];
+  
+  const targetX = faceRotations[page?.id || 0]?.x || 0;
+  const targetY = faceRotations[page?.id || 0]?.y || 0;
+
+  // On initialise l'état directement avec l'offset de départ de l'animation
+  const [rotationX, setRotationX] = useState(targetX - 360); 
+  const [rotationY, setRotationY] = useState(targetY - 1440);
+  const [fireIntensity, setFireIntensity] = useState(0);
   const [faceInfo, setFaceInfo] = useState<{id:number,name:string,color:string}[]>([]);
   const [ready, setReady] = useState(false);
   const [initialized, setInitialized] = useState(false);
-  const [dominantFace, setDominantFace] = useState(0);
-  const [clickedFace, setClickedFace] = useState<number | null>(null);
+  
   const containerRef = useRef<HTMLDivElement>(null);
+  const shaderMaskRef = useRef<HTMLDivElement | null>(null);
   const isDragging = useRef(false);
-  const hasDragged = useRef(false); // Pour distinguer click vs drag
+  const hasDragged = useRef(false);
   const lastMouse = useRef({ x: 0, y: 0 });
 
-  // Initialiser la face en fonction de l'URL
-  useEffect(()=>{
-    async function initialiseAll() {
-    const f = await getFaceInfo();
-    if (!initialized) return;
-    if(page){initFace(page);}
-    else{initDefaultFace()}
-    setFaceInfo(f);
-  }
-    initialiseAll()
-  }, [page, initialized]);
+  // 1. Animation Diagonale
+  const startEntryAnimation = useCallback(() => {
+    let startTime: number | null = null;
+    const duration = 3800;
 
-  const faceNormals = [
-    { x: 0, y: 0.333, z: 0.943 },      // Face 0 (Cyan/Formation) - avant
-    { x: 0.816, y: 0.333, z: -0.471 }, // Face 1 (Blue/Nautique) - droite arrière
-    { x: -0.816, y: 0.333, z: -0.471 },// Face 2 (Green/Partenaire) - gauche arrière  
-    { x: 0, y: -1, z: 0 }              // Face 3 (Red/Post-Incendie) - base
-  ];
+    const animate = (now: number) => {
+      if (!startTime) startTime = now;
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
 
-  const faceRotations = [
-    { x: -26, y: 51 },     // pageId 0 (Accueil) - Vue d'ensemble (3 faces visibles)
-    { x: 0, y: 0 },        // pageId 1 (Cyan/Formation) - Face 0 avant
-    { x: 0, y: -120 },      // pageId 2 (Blue/Nautique) - Face 1 rotation droite
-    { x: 0, y: 120 },     // pageId 3 (Green/Partenaire) - Face 2 rotation gauche
-    { x: -90, y: 0 }       // pageId 4 (Red/Post-Incendie) - Face 3 base vers le haut
-  ];
+      const ease = progress < 0.5 
+        ? 8 * progress * progress * progress * progress 
+        : 1 - Math.pow(-2 * progress + 2, 4) / 2;
 
-   
+      // On part de l'offset vers la cible
+      setRotationX((targetX - 360) + (360 * ease));
+      setRotationY((targetY - 1440) + (1440 * ease));
+      setFireIntensity(ease);
 
-  // Initialiser le tétraèdre pour afficher une face spécifique
-  const initFace = useCallback((page: PageData) => {
-    if (!page) return;
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+    requestAnimationFrame(animate);
+  }, [targetX, targetY]);
 
-    const pageIndex = page.id;
-    if (pageIndex < 0 || pageIndex > 4) {
-      console.warn('initFace: pageIndex doit être entre 0 et 4');
-      return;
-    }
-    const rotation = faceRotations[pageIndex];
-    setRotationX(rotation.x);
-    setRotationY(rotation.y);
-    setDominantFace(pageIndex ? pageIndex : 0);
-    
+  // 2. Initialisation des données
+  useEffect(() => {
+    (async () => {
+      const f = await getFaceInfo();
+      setFaceInfo(f);
+    })();
   }, []);
 
-  const initDefaultFace = useCallback(() => {
-    const pageIndex = 0;
-    
-    const rotation = faceRotations[pageIndex];
-    setRotationX(rotation.x);
-    setRotationY(rotation.y);
-    setDominantFace(pageIndex ? pageIndex : 0);
-  }, []);
-
-  // Calculer quelle face est la plus exposée vers la caméra
-  const calculateDominantFace = useCallback((rotX: number, rotY: number) => {
-    const radX = rotX * Math.PI / 180;
-    const radY = rotY * Math.PI / 180;
-    
-    // Même logique que la rotation X3D (angle-axis)
-    const angle = Math.sqrt(radX * radX + radY * radY);
-    if (angle === 0) return 0; // Face rouge par défaut
-    
-    const axisX = radX / angle;
-    const axisY = radY / angle;
-    const axisZ = 0;
-    
-    // Rotation Rodrigues formula autour de l'axe (axisX, axisY, 0)
-    const cosA = Math.cos(angle);
-    const sinA = Math.sin(angle);
-    
-    let maxDot = -Infinity;
-    let dominant = 0;
-
-    faceNormals.forEach((normal, index) => {
-      const { x, y, z } = normal;
-      
-      // Rodrigues rotation: v' = v*cos(a) + (k×v)*sin(a) + k*(k·v)*(1-cos(a))
-      const dot_kv = axisX * x + axisY * y + axisZ * z;
-      
-      // k × v (cross product)
-      const crossX = axisY * z - axisZ * y;
-      const crossY = axisZ * x - axisX * z;
-      const crossZ = axisX * y - axisY * x;
-      
-      // v rotated
-      const nx = x * cosA + crossX * sinA + axisX * dot_kv * (1 - cosA);
-      const ny = y * cosA + crossY * sinA + axisY * dot_kv * (1 - cosA);
-      const nz = z * cosA + crossZ * sinA + axisZ * dot_kv * (1 - cosA);
-
-      // La caméra regarde vers +Z, donc on veut la face avec le plus grand nz
-      if (nz > maxDot) {
-        maxDot = nz;
-        dominant = index;
-      }
-    });
-
-    return dominant;
-  }, []);
-
-  // Charger X3DOM une seule fois
+  // 3. Scripts X3DOM
   useEffect(() => {
     const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://www.x3dom.org/download/x3dom.css';
+    link.rel = 'stylesheet'; link.href = 'https://www.x3dom.org/download/x3dom.css';
     document.head.appendChild(link);
-
     const script = document.createElement('script');
     script.src = 'https://www.x3dom.org/download/x3dom.js';
-    script.onload = () => {
-      setTimeout(() => setReady(true), 300);
-    };
+    script.onload = () => setTimeout(() => setReady(true), 300);
     document.body.appendChild(script);
-
     return () => {
       document.querySelectorAll('script[src*="x3dom"]').forEach(s => s.remove());
       document.querySelectorAll('link[href*="x3dom"]').forEach(l => l.remove());
     };
   }, []);
 
-  // Initialiser la scene X3D une seule fois
+  // 4. Scène 3D avec injection de la rotation initiale
   useEffect(() => {
     if (!ready || !containerRef.current || initialized) return;
+    
+    const ptsStr = "0 1.63 0, -1.5 -0.82 0.86, 1.5 -0.82 0.86, 0 -0.82 -1.73";
+    const points = [{x:0,y:1.63,z:0},{x:-1.5,y:-0.82,z:0.86},{x:1.5,y:-0.82,z:0.86},{x:0,y:-0.82,z:-1.73}];
+    const edges = [[0,1],[0,2],[0,3],[1,2],[2,3],[3,1]];
+
+    // Calcul de la rotation initiale pour éviter le flash
+    const rX = (targetX - 360) * Math.PI / 180;
+    const rY = (targetY - 1440) * Math.PI / 180;
+    const a = Math.sqrt(rX*rX + rY*rY);
+    const initialRotAttr = a > 0 ? `${rX/a} ${rY/a} 0 ${a}` : "0 1 0 0";
+
+    const renderEdges = edges.map(([aIdx, bIdx]) => {
+      const a = points[aIdx], b = points[bIdx];
+      const mid = { x: (a.x+b.x)/2, y: (a.y+b.y)/2, z: (a.z+b.z)/2 };
+      const d = { x: b.x-a.x, y: b.y-a.y, z: b.z-a.z };
+      const len = Math.sqrt(d.x*d.x + d.y*d.y + d.z*d.z);
+      const angle = Math.acos(d.y / len);
+      return `<transform translation="${mid.x} ${mid.y} ${mid.z}" rotation="${d.z} 0 ${-d.x} ${angle}"><shape><appearance><material diffuseColor="0.8 0 0" emissiveColor="0.5 0.05 0"></material></appearance><cylinder radius="0.015" height="${len}"></cylinder></shape></transform>`;
+    }).join('');
 
     containerRef.current.innerHTML = `
-      <x3d width="100%" height="100%" style="border:none;">
+      <x3d id="tetraX3D" width="100%" height="100%" style="border:none; background:transparent;">
         <scene>
           <navigationInfo type="none"></navigationInfo>
-          <viewpoint position="0 0 8" fieldOfView="0.8"></viewpoint>
-          <transform DEF="tetraRotation" rotation="0 1 0 0">
-            <shape DEF="face0" onclick="window.clickFace(0)">
-              <appearance>
-                <material diffuseColor="0.024 0.714 0.831" emissiveColor="0.012 0.357 0.416"></material>
-              </appearance>
-              <indexedfaceset coordIndex="0 1 2 -1" solid="false">
-                <coordinate point="0 2 0, -1.5 -1 1, 1.5 -1 1"></coordinate>
-              </indexedfaceset>
-            </shape>
-            <shape DEF="face1" onclick="window.clickFace(1)">
-              <appearance>
-                <material diffuseColor="0.231 0.510 0.965" emissiveColor="0.116 0.255 0.483"></material>
-              </appearance>
-              <indexedfaceset coordIndex="0 1 2 -1" solid="false">
-                <coordinate point="0 2 0, 1.5 -1 1, 0 -1 -1.5"></coordinate>
-              </indexedfaceset>
-            </shape>
-            <shape DEF="face2" onclick="window.clickFace(2)">
-              <appearance>
-                <material diffuseColor="0.063 0.725 0.506" emissiveColor="0.031 0.363 0.253"></material>
-              </appearance>
-              <indexedfaceset coordIndex="0 1 2 -1" solid="false">
-                <coordinate point="0 2 0, 0 -1 -1.5, -1.5 -1 1"></coordinate>
-              </indexedfaceset>
-            </shape>
-            <shape DEF="face3" onclick="window.clickFace(3)">
-              <appearance>
-                <material diffuseColor="0.937 0.267 0.267" emissiveColor="0.469 0.133 0.133"></material>
-              </appearance>
-              <indexedfaceset coordIndex="0 1 2 -1" solid="false">
-                <coordinate point="-1.5 -1 1, 0 -1 -1.5, 1.5 -1 1"></coordinate>
-              </indexedfaceset>
-            </shape>
+          <directionalLight direction="0 -1 -1" intensity="1.8"></directionalLight>
+          <viewpoint position="0 0 7" fieldOfView="0.8"></viewpoint>
+          <transform DEF="tetraRotation" rotation="${initialRotAttr}">
+            ${["0 1 2 -1", "0 2 3 -1", "0 3 1 -1", "1 3 2 -1"].map((idx, i) => `
+              <shape DEF="face${i}" onclick="window.clickFace(${i})">
+                <appearance><material diffuseColor="1 1 1"></material></appearance>
+                <indexedfaceset coordIndex="${idx}" solid="true" ccw="true"><coordinate point="${ptsStr}"></coordinate></indexedfaceset>
+              </shape>`).join('')}
+            ${renderEdges}
           </transform>
         </scene>
-      </x3d>
-    `;
+      </x3d>`;
 
-    // @ts-ignore
-    if (window.x3dom) {
-      // @ts-ignore
-      window.x3dom.reload();
+    const x3dElem = document.getElementById('tetraX3D');
+    if (x3dElem) {
+      x3dElem.addEventListener('downloadsfinished', () => {
+        setTimeout(startEntryAnimation, 50);
+      });
     }
+
+    if ((window as any).x3dom) (window as any).x3dom.reload();
     setInitialized(true);
-  }, [ready, initialized]);
+  }, [ready, initialized, startEntryAnimation, targetX, targetY]);
 
-  
-  // Handler pour le clic sur une face spécifique (pas le drag)
-  const handleClickFace = useCallback(async (faceIndex: number) => {
-    // Ignorer si c'était un drag
-    if (hasDragged.current) return;
-    
-    // faceIndex 0-3 correspond à pageId 1-4
-    const targetPageId = faceIndex + 1;
-    
-    if (faceInfo.length > 0 && faceInfo[targetPageId]) {
-      console.log(`Face ${faceIndex} cliquée → Page ${targetPageId} (${faceInfo[targetPageId].name})`);
-    }
-    setClickedFace(faceIndex);
-    const targetPage = await getPageById(targetPageId);
-    if(targetPage){window.location.href = `${targetPage.url}`;}
-    
-    // Reset après un court délai pour l'animation
-    setTimeout(() => setClickedFace(null), 300);
-  }, [faceInfo]);
-
-  // Enregistrer la fonction de clic dans window pour X3DOM
+  // 5. Masque de feu & Projection (Inchangé)
   useEffect(() => {
-    // @ts-ignore
-    window.clickFace = (faceIndex: number) => {
-      handleClickFace(faceIndex);
-    };
-    
-    return () => {
-      // @ts-ignore
-      delete window.clickFace;
-    };
-  }, [handleClickFace]);
+    if (!shaderMaskRef.current || !containerRef.current || !initialized) return;
+    const wrapper = containerRef.current.parentElement;
+    if (!wrapper) return;
+    const { width, height } = wrapper.getBoundingClientRect();
+    const verts = [{x:0,y:1.63,z:0},{x:-1.5,y:-0.82,z:0.86},{x:1.5,y:-0.82,z:0.86},{x:0,y:-0.82,z:-1.73}];
+    const radX = (rotationX * Math.PI) / 180;
+    const radY = (rotationY * Math.PI) / 180;
+    const angle = Math.sqrt(radX * radX + radY * radY);
+    const cosA = Math.cos(angle); const sinA = Math.sin(angle);
+    const kx = angle > 0 ? radX / angle : 0; const ky = angle > 0 ? radY / angle : 0;
 
-  // Mettre a jour la rotation sans recharger (rotation pure, pas de translation)
-  useEffect(() => {
-    if (!initialized || !containerRef.current) return;
+    const projected = verts.map(v => {
+      const dot = kx * v.x + ky * v.y;
+      const rx = v.x * cosA + (ky * v.z) * sinA + kx * dot * (1 - cosA);
+      const ry = v.y * cosA + (-kx * v.z) * sinA + ky * dot * (1 - cosA);
+      const rz = v.z * cosA + (kx * v.y - ky * v.x) * sinA;
+      const zView = 7 - rz;
+      const focal = (height / 2) / Math.tan(0.4);
+      return { x: (width/2) + (rx * focal) / zView, y: (height/2) - (ry * focal) / zView };
+    });
 
-    const transform = containerRef.current.querySelector('[DEF="tetraRotation"]');
-    if (transform) {
-      console.log(rotationX,rotationY)
-      const radX = rotationX * Math.PI / 180;
-      const radY = rotationY * Math.PI / 180;
-      // Rotation combinée X et Y autour du centre (pas de déplacement)
-      const angle = Math.sqrt(radX * radX + radY * radY);
-      const axisX = angle > 0 ? radX / angle : 0;
-      const axisY = angle > 0 ? radY / angle : 1;
-      transform.setAttribute('rotation', `${axisX} ${axisY} 0 ${angle}`);
-    }
+    const ptsSort = projected.map(p => [p.x, p.y]).sort((a,b) => a[0]-b[0]);
+    const cross = (o:any, a:any, b:any) => (a[0]-o[0])*(b[1]-o[1]) - (a[1]-o[1])*(b[0]-o[0]);
+    const lower: any[] = []; for (let p of ptsSort) { while(lower.length>=2 && cross(lower[lower.length-2], lower[lower.length-1], p)<=0) lower.pop(); lower.push(p); }
+    const upper: any[] = []; for (let i=ptsSort.length-1; i>=0; i--) { while(upper.length>=2 && cross(upper[upper.length-2], upper[upper.length-1], ptsSort[i])<=0) upper.pop(); upper.push(ptsSort[i]); }
+    const hull = lower.concat(upper.slice(1, -1));
+    const poly = hull.map(p => `${p[0].toFixed(1)}px ${p[1].toFixed(1)}px`).join(', ');
+    shaderMaskRef.current.style.clipPath = `polygon(${poly})`;
   }, [rotationX, rotationY, initialized]);
 
-  // Drag handlers
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    isDragging.current = true;
-    hasDragged.current = false; // Reset au début
-    lastMouse.current = { x: e.clientX, y: e.clientY };
-  }, []);
+  // 6. Logos
+  useEffect(() => {
+    if (!initialized || !containerRef.current || faceInfo.length === 0) return;
+    const logos = ["/images/DEP-05.png", "/images/LOGO FIRE-01.png", "/images/LOGO FIRE-02.png", "/images/LOGO FIRE-04.png"];
+    const logoSettings = [
+      { scale: "1.5 1.5", trans: "-0.17 0.05", rot:"0" },
+      { scale: "-2 2", trans: "-0.8 -0.1", rot: "0" }, 
+      { scale: "2 2", trans: "-0.35 -0.1", rot: "0.075" },
+      { scale: "2.1 2.1", trans: "-0.27 -0.37", rot : "0" }
+    ];
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    for (let i = 0; i < 4; i++) {
+      const shape = containerRef.current.querySelector(`[DEF=face${i}]`);
+      if (!shape) continue;
+      const settings = logoSettings[i];
+      shape.querySelector('appearance')!.innerHTML = `
+        <material diffuseColor="1 1 1" emissiveColor="0.1 0.1 0.1"></material>
+        <textureTransform scale="${settings.scale}" translation="${settings.trans}" rotation="${settings.rot}"></textureTransform>
+        <ImageTexture url='${encodeURI(logos[i])}' repeatS='false' repeatT='false'></ImageTexture>`;
+    }
+  }, [faceInfo, initialized]);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging.current) return;
-    
-    const deltaX = e.clientX - lastMouse.current.x;
-    const deltaY = e.clientY - lastMouse.current.y;
-    
-    // Marquer comme drag si mouvement significatif (> 5px)
-    if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
-      hasDragged.current = true;
-    }
-    
-    setRotationY(r => r + deltaX * 0.5);
-    setRotationX(r => r + deltaY * 0.5);
-    
+    const dx = e.clientX - lastMouse.current.x;
+    const dy = e.clientY - lastMouse.current.y;
+    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) hasDragged.current = true;
+    setRotationY(r => r + dx * 0.5); setRotationX(r => r + dy * 0.5);
     lastMouse.current = { x: e.clientX, y: e.clientY };
+  };
+
+  useEffect(() => {
+    (window as any).clickFace = (i: number) => {
+      if (!hasDragged.current) getPageById(i + 1).then(p => { if(p) window.location.href = p.url; });
+    };
   }, []);
 
-  const handleMouseUp = useCallback(() => {
-    isDragging.current = false;
-    // Calculer la face dominante seulement si on a draggé
-    if (hasDragged.current) {
-      const newDominant = calculateDominantFace(rotationX, rotationY);
-      setDominantFace(newDominant);
+  useEffect(() => {
+    const trans = containerRef.current?.querySelector('[DEF="tetraRotation"]');
+    if (trans) {
+      const rX = rotationX * Math.PI / 180, rY = rotationY * Math.PI / 180;
+      const a = Math.sqrt(rX*rX + rY*rY);
+      if (a > 0) trans.setAttribute('rotation', `${rX/a} ${rY/a} 0 ${a}`);
     }
-  }, [rotationX, rotationY, calculateDominantFace]); 
-
-  
-  if (!ready) {
-    return (
-      <div className="min-h-[300px] bg-transparent flex items-center justify-center">
-        <div className="text-white text-xl">Chargement X3DOM...</div>
-      </div>
-    );
-  }
+  }, [rotationX, rotationY]);
 
   return (
-    <div className="min-h-[400px] bg-transparent flex flex-col items-center justify-center p-8">
-      {/* <h1 className="text-3xl font-bold text-white mb-6">Tetraedre X3DOM</h1> */}
-      
-      {faceInfo.length > 0 && faceInfo[dominantFace] && (
-        <div 
-          className="mb-4 px-4 py-2 rounded-lg text-white font-bold transition-all duration-300"
-          style={{ backgroundColor: faceInfo[dominantFace].color }}
-        >
-          Face dominante: {faceInfo[dominantFace].name} (Face {dominantFace})
+    <div className="relative min-h-[750px] bg-transparent flex items-center justify-center overflow-hidden">
+      <div className="relative w-[650px] h-[650px]">
+        <div ref={shaderMaskRef} className="absolute inset-0 w-full h-full z-5 pointer-events-none">
+          <ShaderFire intensity={fireIntensity} />
         </div>
-      )}
-
-      {/* Indicateur de face cliquée - faceIndex + 1 = pageId pour la couleur */}
-      {clickedFace !== null && faceInfo.length > 0 && faceInfo[clickedFace + 1] && (
         <div 
-          className="mb-2 px-3 py-1 rounded-full text-sm text-white animate-pulse"
-          style={{ backgroundColor: faceInfo[clickedFace + 1].color }}
-        >
-          🖱️ Click: {faceInfo[clickedFace + 1].name}
-        </div>
-      )}
-      
-      <div 
-        ref={containerRef}
-        className="w-[400px] h-[400px] bg-transparent rounded-xl cursor-grab active:cursor-grabbing"
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-      />
-
-      {/* <p className="mt-6 text-gray-400">Glissez pour tourner ou cliquez sur une face</p>
-      <p className="mt-2 text-white text-lg">X: {rotationX.toFixed(0)}° | Y: {rotationY.toFixed(0)}°</p>
-       */}
-      {/* <button 
-        onClick={() => { setRotationX(0); setRotationY(0); }}
-        className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white"
-      >
-        Reinitialiser
-      </button> */}
+          ref={containerRef}
+          className="absolute inset-0 bg-transparent cursor-grab active:cursor-grabbing z-10"
+          onMouseDown={(e) => { isDragging.current = true; hasDragged.current = false; lastMouse.current = { x: e.clientX, y: e.clientY }; }}
+          onMouseMove={handleMouseMove}
+          onMouseUp={() => isDragging.current = false}
+          onMouseLeave={() => isDragging.current = false}
+        />
+      </div>
     </div>
   );
 }

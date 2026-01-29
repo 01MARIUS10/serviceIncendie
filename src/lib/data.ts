@@ -159,6 +159,16 @@ export async function getFaceInfo() {
   }));
 }
 
+// Informations globales pour la scène (comme une vidéo d'ambiance entourant le tétraèdre)
+export async function getSceneInfo() {
+  // Aucun média par défaut — n'utilise pas la vidéo fournie automatiquement.
+  // Retourner `surroundFireVideo: null` empêche `Tetraede` d'injecter
+  // des MovieTexture basés sur un fichier local non désiré.
+  return {
+    surroundFireVideo: null,
+  };
+}
+
 // Métadonnées SEO pour la page Accueil
 export async function generateMetadata(pageId: number): Promise<Metadata> {
   const pages = await getPages();
@@ -216,14 +226,9 @@ export async function generateMetadata(pageId: number): Promise<Metadata> {
       canonical: `https://tsotra.com${pageData.url}`,
     },
 
-    // Viewport et thème
-    viewport: {
-      width: "device-width",
-      initialScale: 1,
-      maximumScale: 5,
-    },
-    
-    themeColor: pageData.color,
+    // Note: viewport and themeColor should be exported separately per Next.js
+    // recommendations. These values are intentionally omitted here to avoid
+    // framework warnings about unsupported metadata placement.
     
     // Métadonnées additionnelles
     category: "Formation Professionnelle",

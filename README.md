@@ -1,6 +1,6 @@
-# Spline 3D Navigation - Next.js
+# 3D Navigation - Next.js (X3DOM)
 
-Un projet Next.js avec une navigation 3D interactive utilisant React Spline.
+Un projet Next.js avec une navigation 3D interactive utilisant X3DOM pour le tétraèdre.
 
 ## Fonctionnalités
 
@@ -25,8 +25,10 @@ Un projet Next.js avec une navigation 3D interactive utilisant React Spline.
 ## Installation
 
 ```bash
-npm install @splinetool/react-spline @splinetool/runtime framer-motion
+npm install
 ```
+
+Remarque: la scène X3DOM est chargée depuis le CDN dans le composant et ne nécessite pas d'installation NPM supplémentaire. Les dépendances principales sont listées dans `package.json`.
 
 ## Développement
 
