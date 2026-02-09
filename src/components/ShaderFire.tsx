@@ -149,7 +149,7 @@ export default function ShaderFire({ intensity = 1.0 }: ShaderFireProps) {
       gl!.uniform2f(uRes, canvas!.width, canvas!.height);
       gl!.uniform1f(uIntensity, intensity); // Utilisation de la prop d'intensité
 
-      gl!.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      gl!.drawArrays(gl!.TRIANGLE_STRIP, 0, 4);
       rafId = requestAnimationFrame(render);
     }
 
