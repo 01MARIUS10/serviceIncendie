@@ -8,21 +8,33 @@ import { getPageByUrl, PageData } from '@/lib/data';
 export default function TetraedeWrapper() {
   const pathname = usePathname();
   const [page, setPage] = useState<PageData | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   useEffect(() => {
+    if (!mounted || !pathname) return;
+    
     console.log('Current pathname:', pathname);
 
     // Récupérer la page correspondant à l'URL
-    getPageByUrl(pathname).then((page) => {
-      if (page) {
+    getPageByUrl(pathname).then((foundPage) => {
+      if (foundPage) {
         // Initialiser avec la face correspondante (id - 1 car faces 0-3)
-        if (page.id >= 0 && page.id <= 4) {
-          console.log('Page found:', page.title, 'ID:', page.id);
-          setPage(page);
+        if (foundPage.id >= 0 && foundPage.id <= 4) {
+          console.log('Page found:', foundPage.title, 'ID:', foundPage.id);
+          setPage(foundPage);
         }
       }
     });
-  }, [pathname]);
+  }, [pathname, mounted]);
+
+  // Ne pas rendre pendant le SSR
+  if (!mounted) {
+    return null;
+  }
 
   return <Tetraede page={page} />;
 }
