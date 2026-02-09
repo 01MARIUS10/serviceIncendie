@@ -5,8 +5,8 @@
   # Directory to publish (Next.js output)
   publish = ".next"
   
-  # Build command
-  command = "npm run build"
+  # Build command - install all deps including devDependencies
+  command = "npm ci && npm run build"
 
 # Next.js runtime plugin (required for Next.js 13+ with App Router)
 [[plugins]]
@@ -16,6 +16,9 @@
 [build.environment]
   NODE_VERSION = "20"
   NPM_VERSION = "10"
+  # Force npm to install devDependencies
+  NPM_FLAGS = "--include=dev"
+  NODE_ENV = "development"
 
 # Headers for security and caching
 [[headers]]
@@ -51,18 +54,18 @@
 
 # Production context
 [context.production]
-  command = "npm run build"
+  command = "npm ci && npm run build"
 
 [context.production.environment]
-  NODE_ENV = "production"
+  NODE_ENV = "development"
 
 # Preview/Branch deploys context
 [context.deploy-preview]
-  command = "npm run build"
+  command = "npm ci && npm run build"
 
 [context.branch-deploy]
-  command = "npm run build"
+  command = "npm ci && npm run build"
 
 # Dev branch specific settings
 [context.dev]
-  command = "npm run build"
+  command = "npm ci && npm run build"
