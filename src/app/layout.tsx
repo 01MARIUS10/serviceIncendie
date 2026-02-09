@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import TetraedeWrapper from "@/components/TetraedeWrapper";
+import dynamic from "next/dynamic";
+
+// Import dynamique pour éviter les erreurs SSR
+const TetraedeWrapper = dynamic(() => import("@/components/TetraedeWrapper"), {
+  ssr: false,
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
