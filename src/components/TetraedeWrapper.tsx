@@ -6,16 +6,32 @@ import { getPageByUrl, PageData } from '@/lib/data';
 
 export default function TetraedeWrapper() {
   const [page, setPage] = useState<PageData | null>(null);
+  const [pathname, setPathname] = useState<string | null>(null);
 
-  const [currentPath, setCurrentPath] = useState<string>('/');
-  const [mounted, setMounted] = useState(false);
+
+   useEffect(() => {
+    // ✅ Lecture sûre du pathname, sans usePathname()
+    setPathname(window.location.pathname);
+  }, []);
 
   useEffect(() => {
-    // Attendre d'être monté côté client
-    setMounted(true);
+    if (!pathname) return;
 
+    console.log('Current pathname:', pathname);
+
+    getPageByUrl(pathname).then((foundPage) => {
+      if (foundPage && foundPage.id >= 0 && foundPage.id <= 4) {
+        console.log('Page found:', foundPage.title, 'ID:', foundPage.id);
+        setPage(foundPage);
+      }
+    });
+  }, [pathname]);
+
+  useEffect(() => {
+    
     // Utiliser window.location au lieu de usePathname()
     if (typeof window !== 'undefined') {
+      // Attendre d'être monté côté client
       const pathname = window.location.pathname;
       getPageByUrl(pathname).then((foundPage) => {
         if (foundPage && foundPage.id >= 0 && foundPage.id <= 4) {
@@ -23,12 +39,11 @@ export default function TetraedeWrapper() {
           setPage(foundPage);
         }
       });
-      setCurrentPath(pathname);
     }
   }, []);
 
   // Ne rien afficher tant qu'on n'est pas côté client
-  if (!mounted) {
+  if (!pathname) {
     return null;
   }
 
