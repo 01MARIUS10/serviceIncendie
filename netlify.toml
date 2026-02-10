@@ -18,7 +18,8 @@
   NPM_VERSION = "10"
   # Force npm to install devDependencies
   NPM_FLAGS = "--include=dev"
-  NODE_ENV = "development"
+  NODE_ENV = "production"
+  NEXT_PRIVATE_STANDALONE = "true"
 
 # Headers for security and caching
 [[headers]]
