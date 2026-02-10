@@ -10,28 +10,15 @@ export default function TetraedeWrapper() {
 
 
    useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setPathname(window.location.pathname);
+    }
     // ✅ Lecture sûre du pathname, sans usePathname()
-    setPathname(window.location.pathname);
   }, []);
 
-  useEffect(() => {
-    if (!pathname) return;
-
-    console.log('Current pathname:', pathname);
-
-    getPageByUrl(pathname).then((foundPage) => {
-      if (foundPage && foundPage.id >= 0 && foundPage.id <= 4) {
-        console.log('Page found:', foundPage.title, 'ID:', foundPage.id);
-        setPage(foundPage);
-      }
-    });
-  }, [pathname]);
 
   useEffect(() => {
-    
-    // Utiliser window.location au lieu de usePathname()
     if (typeof window !== 'undefined') {
-      // Attendre d'être monté côté client
       const pathname = window.location.pathname;
       getPageByUrl(pathname).then((foundPage) => {
         if (foundPage && foundPage.id >= 0 && foundPage.id <= 4) {
@@ -40,7 +27,7 @@ export default function TetraedeWrapper() {
         }
       });
     }
-  }, []);
+  }, [pathname]);
 
   // Ne rien afficher tant qu'on n'est pas côté client
   if (!pathname) {
