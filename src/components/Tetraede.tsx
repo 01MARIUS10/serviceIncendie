@@ -210,7 +210,7 @@ export default function Tetraede({ page = null }: TetraedeProps) {
   }, [rotationX, rotationY]);
 
   return (
-    <div className="relative min-h-[750px] bg-transparent flex items-center justify-center overflow-hidden">
+    <div className="relative mt-[50px] min-h-[350px] max-h-[350px] bg-transparent flex items-center justify-center overflow-hidden">
       <div className="relative w-[650px] h-[650px]">
         <div ref={shaderMaskRef} className="absolute inset-0 w-full h-full z-5 pointer-events-none">
           <ShaderFire intensity={fireIntensity} />
