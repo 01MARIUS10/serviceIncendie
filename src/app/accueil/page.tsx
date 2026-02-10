@@ -1,8 +1,11 @@
-import { getPages } from "@/lib/data";
+import { getPages, generateMetadata as generatePageMetadata } from "@/lib/data";
 import Link from "next/link";
-import Tetraede from "@/components/Tetraede";
-import RootLayout from "../layout";
+import type { Metadata } from "next";
 
+// Métadonnées SEO
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata(0);
+}
 
 // Page Accueil - Générée côté serveur
 export default async function AccueilPage() {
