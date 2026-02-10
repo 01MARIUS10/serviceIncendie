@@ -1,7 +1,8 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 // Import dynamique du TetraedeWrapper côté client uniquement
 const TetraedeWrapper = dynamic(() => import("@/components/TetraedeWrapper"), {
@@ -14,9 +15,21 @@ interface ClientLayoutProps {
 }
 
 export default function ClientLayout({ children }: ClientLayoutProps) {
+  const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
+  
+  // Ne monter que côté client
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  // Ne pas afficher le tétraèdre pendant le SSR ou sur les pages spéciales
+  const isSpecialPage = pathname?.startsWith('/_') || !pathname;
+  const shouldShowTetraede = mounted && !isSpecialPage;
+
   return (
     <>
-      <TetraedeWrapper />
+      {shouldShowTetraede && <TetraedeWrapper />}
       {children}
     </>
   );
