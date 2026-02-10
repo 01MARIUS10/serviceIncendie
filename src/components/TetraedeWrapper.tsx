@@ -1,39 +1,26 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import Tetraede from './Tetraede';
-import { getPageByUrl, PageData } from '@/lib/data';
+import { useEffect, useState } from 'react';
 
 export default function TetraedeWrapper() {
-  const [page, setPage] = useState<PageData | null>(null);
-  const [pathname, setPathname] = useState<string | null>(null);
+  const [currentPath, setCurrentPath] = useState<string>('/');
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setPathname(window.location.pathname);
-  }, []);
-  
-  useEffect(() => {
-    if (!pathname) return;
+    // Attendre d'être monté côté client
+    setMounted(true);
     
-    console.log('Current pathname:', pathname);
+    // Utiliser window.location au lieu de usePathname()
+    if (typeof window !== 'undefined') {
+      setCurrentPath(window.location.pathname);
+    }
+  }, []);
 
-    // Récupérer la page correspondant à l'URL
-    getPageByUrl(pathname).then((foundPage) => {
-      if (foundPage) {
-        // Initialiser avec la face correspondante (id - 1 car faces 0-3)
-        if (foundPage.id >= 0 && foundPage.id <= 4) {
-          console.log('Page found:', foundPage.title, 'ID:', foundPage.id);
-          setPage(foundPage);
-        }
-      }
-    });
-  }, [pathname]);
-
-  // Ne pas rendre pendant le SSR
-  if (!pathname) {
+  // Ne rien afficher tant qu'on n'est pas côté client
+  if (!mounted) {
     return null;
   }
 
-  return <Tetraede page={page} />;
+  return <Tetraede currentPath={currentPath} />;
 }
