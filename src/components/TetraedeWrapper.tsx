@@ -6,16 +6,15 @@ import Tetraede from './Tetraede';
 import { getPageByUrl, PageData } from '@/lib/data';
 
 export default function TetraedeWrapper() {
-  const pathname = usePathname();
   const [page, setPage] = useState<PageData | null>(null);
-  const [mounted, setMounted] = useState(false);
+  const [pathname, setPathname] = useState<string | null>(null);
 
   useEffect(() => {
-    setMounted(true);
+    setPathname(window.location.pathname);
   }, []);
   
   useEffect(() => {
-    if (!mounted || !pathname) return;
+    if (!pathname) return;
     
     console.log('Current pathname:', pathname);
 
@@ -29,10 +28,10 @@ export default function TetraedeWrapper() {
         }
       }
     });
-  }, [pathname, mounted]);
+  }, [pathname]);
 
   // Ne pas rendre pendant le SSR
-  if (!mounted) {
+  if (!pathname) {
     return null;
   }
 
