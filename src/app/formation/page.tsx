@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 
 // Métadonnées SEO
 export async function generateMetadata(): Promise<Metadata> {
-  return generatePageMetadata(1);
+  return generatePageMetadata(3);
 }
 
 // --- Données statiques pour la page Formation ---
@@ -167,7 +167,7 @@ const formations = [
 // Page Formation - Générée côté serveur
 export default async function FormationPage() {
   const pages = await getPages();
-  const pageData = pages.find((p) => p.id === 1)!;
+  const pageData = pages.find((p) => p.id === 3)!;
 
   // Schema.org JSON-LD
   const jsonLd = {

@@ -44,7 +44,7 @@ export async function getPages(): Promise<PageData[]> {
       ogImage: "/images/tsotra-hero.jpg",
     },
     {
-      id: 1,
+      id: 3,
       title: "Formation RCCI & Enquête Incendie - 2F Fire Forensic | TSOTRA",
       description: "Nous formons les experts de demain. FIRE FORENSIC (2F), seule entreprise française reconnue instructeur NAFI et IAAI USA, propose des formations RCCI, certifications CFEI et préparation CFI-IAAI conformément au NFPA 1033.",
       features: [
@@ -101,27 +101,27 @@ export async function getPages(): Promise<PageData[]> {
       ],
       ogImage: "/images/nautique-hero.jpg",
     },
-    {
-      id: 3,
-      title: "Nos Partenaires - TSOTRA",
-      description: "TSOTRA collabore avec des entreprises et organismes de référence pour offrir des services de qualité. Rejoignez notre réseau de partenaires de confiance.",
-      features: [
-        "Réseau d'entreprises certifiées",
-        "Partenariats institutionnels",
-        "Collaboration inter-services",
-        "Mutualisation des compétences",
-      ],
-      color: "#10B981", // Green
-      colorName: "Green",
-      url: "/partenaire",
-      keywords: [
-        "partenaires TSOTRA",
-        "réseau professionnel",
-        "collaboration",
-        "entreprises partenaires"
-      ],
-      ogImage: "/images/partenaires-hero.jpg",
-    },
+    // {
+    //   id: 3,
+    //   title: "Nos Partenaires - TSOTRA",
+    //   description: "TSOTRA collabore avec des entreprises et organismes de référence pour offrir des services de qualité. Rejoignez notre réseau de partenaires de confiance.",
+    //   features: [
+    //     "Réseau d'entreprises certifiées",
+    //     "Partenariats institutionnels",
+    //     "Collaboration inter-services",
+    //     "Mutualisation des compétences",
+    //   ],
+    //   color: "#10B981", // Green
+    //   colorName: "Green",
+    //   url: "/partenaire",
+    //   keywords: [
+    //     "partenaires TSOTRA",
+    //     "réseau professionnel",
+    //     "collaboration",
+    //     "entreprises partenaires"
+    //   ],
+    //   ogImage: "/images/partenaires-hero.jpg",
+    // },
     {
       id: 4,
       title: "E2D Fire Protection Preservation - Post-Incendie, Désamiantage & Dépollution | TSOTRA",
