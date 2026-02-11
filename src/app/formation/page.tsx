@@ -175,7 +175,7 @@ export default async function FormationPage() {
     "@type": "EducationalOrganization",
     name: "2F - Fire Forensic | Formation RCCI",
     description: pageData.description,
-    url: `https://tsotra.com${pageData.url}`,
+    url: `https://fireforensic.com${pageData.url}`,
     image: pageData.ogImage,
     offers: {
       "@type": "AggregateOffer",

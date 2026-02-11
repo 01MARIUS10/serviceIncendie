@@ -16,10 +16,10 @@ export default async function AccueilPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "TSOTRA",
+    name: "Fire FORENSIC",
     description: pageData.description,
-    url: "https://tsotra.com",
-    logo: "https://tsotra.com/images/logo.png",
+    url: "https://fireforensic.com",
+    logo: "https://fireforensic.com/images/logo.png",
     image: pageData.ogImage,
     telephone: "+33-X-XX-XX-XX-XX",
     address: {
@@ -30,9 +30,9 @@ export default async function AccueilPage() {
       addressCountry: "FR",
     },
     sameAs: [
-      "https://www.facebook.com/tsotra",
-      "https://www.linkedin.com/company/tsotra",
-      "https://twitter.com/tsotra",
+      "https://www.facebook.com/fireforensic",
+      "https://www.linkedin.com/company/fireforensic",
+      "https://twitter.com/fireforensic",
     ],
     offers: pageData.features.map((feature) => ({
       "@type": "Offer",

@@ -19,8 +19,8 @@ export async function getPages(): Promise<PageData[]> {
   const pages: PageData[] = [
     {
       id: 0,
-      title: "Accueil - TSOTRA | Solutions de Formation et Sécurité",
-      description: "TSOTRA propose des formations professionnelles en sécurité incendie, nautisme et accompagnement d'entreprises. Expert en prévention et gestion des risques depuis 2010.",
+      title: "Accueil -  Solutions de Formation et Sécurité",
+      description: "Fire Forensic propose des formations professionnelles en sécurité incendie, nautisme et accompagnement d'entreprises. Expert en prévention et gestion des risques depuis 2010.",
       features: [
         "Formation sécurité incendie certifiée",
         "École de navigation et permis bateau",
@@ -39,13 +39,13 @@ export async function getPages(): Promise<PageData[]> {
         "post-incendie",
         "formation professionnelle",
         "sécurité entreprise",
-        "TSOTRA"
+        "Fire Forensic",
       ],
       ogImage: "/images/tsotra-hero.jpg",
     },
     {
       id: 3,
-      title: "Formation RCCI & Enquête Incendie - 2F Fire Forensic | TSOTRA",
+      title: "Formation RCCI & Enquête Incendie - 2F Fire Forensic ",
       description: "Nous formons les experts de demain. FIRE FORENSIC (2F), seule entreprise française reconnue instructeur NAFI et IAAI USA, propose des formations RCCI, certifications CFEI et préparation CFI-IAAI conformément au NFPA 1033.",
       features: [
         "Certification CFEI – NAFI",
@@ -75,7 +75,7 @@ export async function getPages(): Promise<PageData[]> {
     },
     {
       id: 2,
-      title: "N2F Nautical Fire Forensic - Investigation Post-Incendie Nautique | TSOTRA",
+      title: "N2F Nautical Fire Forensic - Investigation Post-Incendie Nautique",
       description: "N2F – Nautical Fire Forensic est spécialisée en investigation post-incendie nautique. Expertise des sinistres sur navires de plaisance, pêche et marine marchande nécessitant des compétences particulières dans le domaine maritime.",
       features: [
         "Expertise incendie navires de plaisance",
@@ -124,7 +124,7 @@ export async function getPages(): Promise<PageData[]> {
     // },
     {
       id: 4,
-      title: "E2D Fire Protection Preservation - Post-Incendie, Désamiantage & Dépollution | TSOTRA",
+      title: "E2D Fire Protection Preservation - Post-Incendie, Désamiantage & Dépollution",
       description: "E2D – Fire Protection Preservation intervient après un sinistre incendie pour sécuriser les lieux, mettre en œuvre les mesures de sauvegarde et assurer la dépollution du site vis-à-vis des risques amiante et plomb.",
       features: [
         "Mesures de sauvegarde immédiates",
@@ -193,16 +193,16 @@ export async function generateMetadata(pageId: number): Promise<Metadata> {
     title: pageData.title,
     description: pageData.description,
     keywords: pageData.keywords?.join(", "),
-    authors: [{ name: "TSOTRA" }],
-    creator: "TSOTRA",
-    publisher: "TSOTRA",
-    
+    authors: [{ name: "Fire Forensic" }],
+    creator: "Fire Forensic",
+    publisher: "Fire Forensic",
+
     // Open Graph
     openGraph: {
       title: pageData.title,
       description: pageData.description,
-      url: `https://tsotra.com${pageData.url}`,
-      siteName: "TSOTRA",
+      url: `https://fireforensic.com${pageData.url}`,
+      siteName: "Fire Forensic",
       images: [
         {
           url: pageData.ogImage || "/images/og-default.jpg",
@@ -221,7 +221,7 @@ export async function generateMetadata(pageId: number): Promise<Metadata> {
       title: pageData.title,
       description: pageData.description,
       images: [pageData.ogImage || "/images/og-default.jpg"],
-      creator: "@tsotra",
+      creator: "@fireforensic",
     },
 
     // Autres métadonnées
@@ -238,7 +238,7 @@ export async function generateMetadata(pageId: number): Promise<Metadata> {
     },
     
     alternates: {
-      canonical: `https://tsotra.com${pageData.url}`,
+      canonical: `https://fireforensic.com${pageData.url}`,
     },
 
     // Note: viewport and themeColor should be exported separately per Next.js

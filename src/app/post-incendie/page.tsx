@@ -158,7 +158,7 @@ export default async function PostIncendiePage() {
     "@type": "ProfessionalService",
     name: "E2D - Fire Protection Preservation",
     description: pageData.description,
-    url: `https://tsotra.com${pageData.url}`,
+    url: `https://fireforensic.com${pageData.url}`,
     image: pageData.ogImage,
     serviceType: [
       "Mesures de sauvegarde post-incendie",
@@ -174,7 +174,7 @@ export default async function PostIncendiePage() {
       name: "E2D - Fire Protection Preservation",
       parentOrganization: {
         "@type": "Organization",
-        name: "TSOTRA",
+        name: "Fire FORENSIC",
       },
     },
   };

@@ -12,40 +12,40 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://tsotra.com"),
+  metadataBase: new URL("https://service-incendie.netlify.app"),
   title: {
-    default: "TSOTRA | Formation Sécurité, Nautisme et Expertise",
-    template: "%s | TSOTRA",
+    default: "Fire FORENSIC | Formation Sécurité, Nautisme et Expertise",
+    template: "%s | Fire FORENSIC",
   },
-  description: "TSOTRA propose des formations professionnelles en sécurité incendie, nautisme et accompagnement d'entreprises. Expert en prévention et gestion des risques.",
+  description: "Fire FORENSIC propose des formations professionnelles en sécurité incendie, nautisme et accompagnement d'entreprises. Expert en prévention et gestion des risques.",
   keywords: [
     "formation sécurité",
     "formation incendie",
     "permis bateau",
     "nautisme",
-    "TSOTRA",
+    "Fire FORENSIC",
     "prévention incendie",
     "expertise post-incendie",
   ],
-  authors: [{ name: "TSOTRA" }],
-  creator: "TSOTRA",
-  publisher: "TSOTRA",
-  applicationName: "TSOTRA",
-  
+  authors: [{ name: "Fire FORENSIC" }],
+  creator: "Fire FORENSIC",
+  publisher: "Fire FORENSIC",
+  applicationName: "Fire FORENSIC",
+
   // Open Graph par défaut
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: "https://tsotra.com",
-    siteName: "TSOTRA",
-    title: "TSOTRA | Formation Sécurité, Nautisme et Expertise",
+    url: "https://fireforensic.com",
+    siteName: "Fire FORENSIC",
+    title: "Fire FORENSIC | Formation Sécurité, Nautisme et Expertise",
     description: "Expert en formation professionnelle, sécurité incendie et navigation",
     images: [
       {
         url: "/images/og-default.jpg",
         width: 1200,
         height: 630,
-        alt: "TSOTRA",
+        alt: "Fire FORENSIC",
       },
     ],
   },
@@ -53,9 +53,9 @@ export const metadata: Metadata = {
   // Twitter par défaut
   twitter: {
     card: "summary_large_image",
-    title: "TSOTRA | Formation Sécurité, Nautisme et Expertise",
+    title: "Fire FORENSIC | Formation Sécurité, Nautisme et Expertise",
     description: "Expert en formation professionnelle, sécurité incendie et navigation",
-    creator: "@tsotra",
+    creator: "@fireforensic",
     images: ["/images/og-default.jpg"],
   },
 

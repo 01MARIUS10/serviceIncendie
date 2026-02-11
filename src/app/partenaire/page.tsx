@@ -16,9 +16,9 @@ export default async function PartenairePage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "TSOTRA - Réseau de Partenaires",
+    name: "Fire FORENSIC - Réseau de Partenaires",
     description: pageData.description,
-    url: `https://tsotra.com${pageData.url}`,
+    url: `https://fireforensic.com${pageData.url}`,
     image: pageData.ogImage,
   };
 

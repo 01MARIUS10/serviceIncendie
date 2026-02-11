@@ -1,10 +1,10 @@
 /**
- * Couleurs centralisées du projet TSOTRA
+ * Couleurs centralisées du projet 
  * Palette: Navy #C7EEFF, Sky #C7EEFF, Orange #F77E03, Red #D62A28
  * Synchronisées avec globals.css et data.ts
  */
 
-// Palette principale TSOTRA
+// Palette principale 
 export const TSOTRA_PALETTE = {
   navy: '#C7EEFF',
   sky: '#C7EEFF',

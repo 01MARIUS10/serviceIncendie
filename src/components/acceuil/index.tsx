@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Entreprise from './entreprise';
 /* =====================================================
-   Page d'accueil TSOTRA / FIRE
+   Page d'accueil  FIRE
    - Hero avec tétraèdre de feu
    - Présentation des deux entreprises (Fire Consulting + Fire Forensic)
    - Services principaux

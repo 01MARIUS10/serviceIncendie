@@ -99,7 +99,7 @@ export default async function NautiquePage() {
     "@type": "ProfessionalService",
     name: "N2F - Nautical Fire Forensic",
     description: pageData.description,
-    url: `https://tsotra.com${pageData.url}`,
+    url: `https://fireforensic.com${pageData.url}`,
     image: pageData.ogImage,
     serviceType: "Investigation Post-Incendie Nautique",
     areaServed: {
@@ -111,7 +111,7 @@ export default async function NautiquePage() {
       name: "N2F - Nautical Fire Forensic",
       parentOrganization: {
         "@type": "Organization",
-        name: "TSOTRA",
+        name: "Fire FORENSIC",
       },
     },
   };
