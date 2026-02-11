@@ -87,9 +87,9 @@ const entreprises: Entreprise[] = [
         couleur: 'yellow',
         lien: '/post-incendie',
         liensExternes: [
-            { label: 'LC-2', url: 'https://lc-2.fr/' },
-            { label: 'CO2 Démolitions', url: 'https://co2-demolitions.fr/' },
-            { label: 'E2 Démolition', url: 'https://www.e2demolition.fr/' },
+            // { label: 'LC-2', url: 'https://lc-2.fr/' },
+            // { label: 'CO2 Démolitions', url: 'https://co2-demolitions.fr/' },
+            // { label: 'E2 Démolition', url: 'https://www.e2demolition.fr/' },
         ],
     },
 ];

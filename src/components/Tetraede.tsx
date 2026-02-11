@@ -167,7 +167,10 @@ export default function Tetraede({ page = null }: TetraedeProps) {
   // 6. Logos
   useEffect(() => {
     if (!initialized || !containerRef.current || faceInfo.length === 0) return;
-    const logos = ["/images/DEP-05.png", "/images/LOGO FIRE-01.png", "/images/LOGO FIRE-02.png", "/images/LOGO FIRE-04.png"];
+    // icon depolution(dep05) ->formation / 
+      //icon acceuil  -> partenaire
+     //icon 3f ->depolution
+    const logos = ["/images/LOGO FIRE-02.png", "/images/LOGO FIRE-01.png", "/images/LOGO FIRE-02.png", "/images/DEP-05.png"];
     const logoSettings = [
       { scale: "1.5 1.5", trans: "-0.17 0.05", rot: "0" },
       { scale: "-2 2", trans: "-0.8 -0.1", rot: "0" },
