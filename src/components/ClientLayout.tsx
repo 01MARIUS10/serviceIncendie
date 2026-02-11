@@ -1,7 +1,10 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
+import Hero from './acceuil/hero';
+import Nav from './nav';
 
 // Import dynamique du TetraedeWrapper côté client uniquement
 const TetraedeWrapper = dynamic(() => import("@/components/TetraedeWrapper"), {
@@ -14,27 +17,15 @@ interface ClientLayoutProps {
 }
 
 export default function ClientLayout({ children }: ClientLayoutProps) {
-  const [mounted, setMounted] = useState(false);
-  const [shouldShowTetraede, setShouldShowTetraede] = useState(false);
-  
-  // Ne monter que côté client
-  useEffect(() => {
-    setMounted(true);
-    
-    // Vérifier le pathname de manière sûre sans usePathname()
-    try {
-      const pathname = window.location.pathname;
-      const isSpecialPage = pathname?.startsWith('/_') || !pathname;
-      setShouldShowTetraede(!isSpecialPage);
-    } catch (e) {
-      // En cas d'erreur, on affiche le tétraèdre par défaut
-      setShouldShowTetraede(true);
-    }
-  }, []);
+  // usePathname() est réactif : il se met à jour à chaque navigation
+  const pathname = usePathname();
+  const shouldShowHero = pathname === '/' || pathname === '/accueil';
 
   return (
     <>
-      {mounted && shouldShowTetraede && <TetraedeWrapper />}
+      {shouldShowHero ? <Hero /> : <Nav />}
+      {/* Spacer pour compenser la nav fixe (h-16 = 4rem) */}
+      {!shouldShowHero && <div className="h-16" />}
       {children}
     </>
   );

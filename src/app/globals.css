@@ -1,27 +1,119 @@
 @import "tailwindcss";
 
+/* ==========================================
+   TSOTRA - Variables CSS personnalisées
+   Palette: Navy #C7EEFF, Sky #C7EEFF, Orange #F77E03, Red #D62A28
+   Typographie: Montserrat (Bold, Medium, Regular)
+   ========================================== */
+
 :root {
+  /* Couleurs principales de la palette */
+  --color-navy: #C7EEFF;
+  --color-sky: #C7EEFF;
+  --color-orange: #F77E03;
+  --color-red: #D62A28;
+  
+  /* Couleurs de fond */
   --background: #0a0a0a;
+  --background-secondary: #1a1a1a;
+  --background-tertiary: #2a2a2a;
   --foreground: #ededed;
+  
+  /* Couleurs par page (mapping avec data.ts) */
+  --page-accueil: #8B5CF6;      /* Purple */
+  --page-formation: #06B6D4;     /* Cyan */
+  --page-nautique: #3B82F6;      /* Blue */
+  --page-partenaire: #10B981;    /* Green */
+  --page-post-incendie: #EF4444; /* Red */
 }
 
 @theme inline {
+  /* Couleurs de base */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  
+  /* Palette TSOTRA */
+  --color-tsotra-navy: #C7EEFF;
+  --color-tsotra-sky: #C7EEFF;
+  --color-tsotra-orange: #F77E03;
+  --color-tsotra-red: #D62A28;
+  
+  /* Couleurs par page */
+  --color-page-accueil: #8B5CF6;
+  --color-page-formation: #06B6D4;
+  --color-page-nautique: #3B82F6;
+  --color-page-partenaire: #10B981;
+  --color-page-post-incendie: #EF4444;
+  
+  /* Typographie Montserrat */
+  --font-montserrat: 'Montserrat', system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-montserrat);
   --font-mono: var(--font-geist-mono);
+  
+  /* Poids de police */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-montserrat);
+  font-weight: var(--font-weight-regular);
 }
 
+/* Classes utilitaires personnalisées */
+.font-montserrat-bold {
+  font-family: var(--font-montserrat);
+  font-weight: var(--font-weight-bold);
+}
+
+.font-montserrat-medium {
+  font-family: var(--font-montserrat);
+  font-weight: var(--font-weight-medium);
+}
+
+.font-montserrat-regular {
+  font-family: var(--font-montserrat);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Couleurs de texte palette */
+.text-tsotra-navy { color: var(--color-tsotra-navy); }
+.text-tsotra-sky { color: var(--color-tsotra-sky); }
+.text-tsotra-orange { color: var(--color-tsotra-orange); }
+.text-tsotra-red { color: var(--color-tsotra-red); }
+
+/* Couleurs de fond palette */
+.bg-tsotra-navy { background-color: var(--color-tsotra-navy); }
+.bg-tsotra-sky { background-color: var(--color-tsotra-sky); }
+.bg-tsotra-orange { background-color: var(--color-tsotra-orange); }
+.bg-tsotra-red { background-color: var(--color-tsotra-red); }
+
+/* Couleurs par page */
+.bg-page-accueil { background-color: var(--color-page-accueil); }
+.bg-page-formation { background-color: var(--color-page-formation); }
+.bg-page-nautique { background-color: var(--color-page-nautique); }
+.bg-page-partenaire { background-color: var(--color-page-partenaire); }
+.bg-page-post-incendie { background-color: var(--color-page-post-incendie); }
+
+.text-page-accueil { color: var(--color-page-accueil); }
+.text-page-formation { color: var(--color-page-formation); }
+.text-page-nautique { color: var(--color-page-nautique); }
+.text-page-partenaire { color: var(--color-page-partenaire); }
+.text-page-post-incendie { color: var(--color-page-post-incendie); }
+
+/* Bordures palette */
+.border-tsotra-navy { border-color: var(--color-tsotra-navy); }
+.border-tsotra-sky { border-color: var(--color-tsotra-sky); }
+.border-tsotra-orange { border-color: var(--color-tsotra-orange); }
+.border-tsotra-red { border-color: var(--color-tsotra-red); }
+
 /* Custom scrollbar hidden */
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
   display: none;
-} */
+}
 
 * {
   -ms-overflow-style: none;

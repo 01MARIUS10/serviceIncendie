@@ -1,6 +1,6 @@
 import { getPages, generateMetadata as generatePageMetadata } from "@/lib/data";
-import Link from "next/link";
 import type { Metadata } from "next";
+import AccueilContent from "@/components/acceuil";
 
 // Métadonnées SEO
 export async function generateMetadata(): Promise<Metadata> {
@@ -51,45 +51,7 @@ export default async function AccueilPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <main className="min-h-screen">
-        <section className="container mx-auto px-4 py-16">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-            Bienvenue chez TSOTRA
-          </h1>
-          
-          <p className="text-xl text-gray-300 mb-8 max-w-3xl">
-            {pageData.description}
-          </p>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-            {pageData.features.map((feature, index) => (
-              <div
-                key={index}
-                className="bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-colors"
-              >
-                <h3 className="text-lg font-semibold text-white mb-2">
-                  {feature}
-                </h3>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12 flex gap-4">
-            <Link
-              href="/formation"
-              className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 rounded-lg text-white font-medium transition-colors"
-            >
-              Nos Formations
-            </Link>
-            <Link
-              href="/nautique"
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium transition-colors"
-            >
-              École Nautique
-            </Link>
-          </div>
-        </section>
-      </main>
+      <AccueilContent />
     </>
   );
 }
