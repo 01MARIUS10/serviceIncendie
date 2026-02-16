@@ -19,17 +19,17 @@ export default function Hero() {
         <div className="w-[50vh] h-[50vh] flex align-center  mx-auto flex-column">
           <TetraedeWrapper />
         </div>
-        <h1 className="text-5xl md:text-7xl font-montserrat-bold text-white mb-6 tracking-tight">
-            <span className="text-tsotra-orange">Lorem</span>
+        <h1 className="text-3xl md:text-5xl font-montserrat-bold text-white mb-12 tracking-tight">
+            <span className="text-tsotra-orange">Fabien Fernandez | Fire forensic</span>
           </h1>
 
-          <p className="text-xl md:text-2xl text-gray-300 font-montserrat-regular mb-4 max-w-3xl mx-auto">
+          {/* <p className="text-xl md:text-2xl text-gray-300 font-montserrat-regular mb-4 max-w-3xl mx-auto">
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perspiciatis neque  . 
           </p>
 
           <p className="text-lg text-gray-400 font-montserrat-regular mb-10 max-w-2xl mx-auto">
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Mollitia accusamus distinctio laudantium!
-          </p>
+          </p> */}
 
         <div className="flex flex-wrap justify-center gap-4">
           <a

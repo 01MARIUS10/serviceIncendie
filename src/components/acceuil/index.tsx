@@ -2,9 +2,10 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import Entreprise from './entreprise';
+import ExpertiseRCCI from './expertiseRCCI';
+
 /* =====================================================
-   Page d'accueil  FIRE
+   Page d'accueil  / FIRE
    - Hero avec tétraèdre de feu
    - Présentation des deux entreprises (Fire Consulting + Fire Forensic)
    - Services principaux
@@ -17,7 +18,116 @@ export default function AccueilContent() {
   return (
     <div className="min-h-screen">
 
-      <Entreprise />
+      {/* ============ DEUX ENTREPRISES ============ */}
+      <section className="py-20 px-4 bg-[#0d0d0d]">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-montserrat-bold text-white text-center mb-4">
+            Nos <span className="text-tsotra-orange">Entreprises</span>
+          </h2>
+          <p className="text-gray-400 text-center font-montserrat-regular mb-16 max-w-2xl mx-auto">
+            Deux structures complémentaires au service de la prévention et l&apos;expertise incendie
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Fire Consulting */}
+            <div className="group relative bg-gradient-to-br from-[#1a1a1a] to-[#111] border border-white/10 rounded-2xl p-8 hover:border-tsotra-orange/50 transition-all duration-500">
+              <div className="flex items-center gap-4 mb-6">
+                <Image
+                  src="/images/LOGO FIRE-02.png"
+                  alt="FABIEN FERNANDES - Fire Consulting"
+                  width={80}
+                  height={80}
+                  className="rounded-full"
+                />
+                <div>
+                  <h3 className="text-2xl font-montserrat-bold text-white">
+                    FABIEN FERNANDES
+                  </h3>
+                  <p className="text-tsotra-orange font-montserrat-medium text-sm tracking-widest uppercase">
+                    Fire Consulting
+                  </p>
+                </div>
+              </div>
+              
+              <p className="text-gray-300 font-montserrat-regular mb-6 leading-relaxed">
+                Création et intégration de solutions en expertise incendie et nautique. 
+                Accompagnement des entreprises dans la prévention des risques et la formation professionnelle.
+              </p>
+
+              <ul className="space-y-3">
+                {[
+                  'Création et intégration logo',
+                  'Expertise incendie',
+                  'Formation nautique',
+                  'Prévention des risques',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-gray-400 font-montserrat-regular">
+                    <span className="w-2 h-2 bg-tsotra-orange rounded-full flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              <Link
+                href="/formation"
+                className="inline-flex items-center gap-2 mt-6 text-tsotra-orange font-montserrat-medium hover:underline"
+              >
+                Découvrir →
+              </Link>
+            </div>
+
+            {/* Fire Forensic */}
+            <div className="group relative bg-gradient-to-br from-[#1a1a1a] to-[#111] border border-white/10 rounded-2xl p-8 hover:border-tsotra-red/50 transition-all duration-500">
+              <div className="flex items-center gap-4 mb-6">
+                <Image
+                  src="/images/LOGO FIRE-04.png"
+                  alt="FABIEN FERNANDES - Fire Forensic"
+                  width={80}
+                  height={80}
+                  className="rounded-full"
+                />
+                <div>
+                  <h3 className="text-2xl font-montserrat-bold text-white">
+                    FABIEN FERNANDES
+                  </h3>
+                  <p className="text-tsotra-red font-montserrat-medium text-sm tracking-widest uppercase">
+                    Fire Forensic
+                  </p>
+                </div>
+              </div>
+              
+              <p className="text-gray-300 font-montserrat-regular mb-6 leading-relaxed">
+                Création et intégration de solutions en investigation post-incendie. 
+                Expertise en désamiantage, plomb, mesure de sauvegarde et mesure conservatoire.
+              </p>
+
+              <ul className="space-y-3">
+                {[
+                  'Logo désamiantage & plomb',
+                  'Mesure de sauvegarde',
+                  'Mesure conservatoire',
+                  'Investigation post-incendie',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-gray-400 font-montserrat-regular">
+                    <span className="w-2 h-2 bg-tsotra-red rounded-full flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              <Link
+                href="/post-incendie"
+                className="inline-flex items-center gap-2 mt-6 text-tsotra-red font-montserrat-medium hover:underline"
+              >
+                Découvrir →
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <ExpertiseRCCI />
+
       {/* ============ CLIENTS CIBLES ============ */}
       <section className="py-20 px-4 bg-black">
         <div className="max-w-6xl mx-auto">
@@ -166,7 +276,7 @@ export default function AccueilContent() {
       </section>
 
       {/* ============ NAVIGATION RAPIDE ============ */}
-      {/* <section className="py-20 px-4 bg-[#0d0d0d]">
+      <section className="py-20 px-4 bg-[#0d0d0d]">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-montserrat-bold text-white text-center mb-16">
             Nos <span className="text-tsotra-orange">Services</span>
@@ -225,7 +335,7 @@ export default function AccueilContent() {
             ))}
           </div>
         </div>
-      </section> */}
+      </section>
 
       {/* ============ FOOTER CTA ============ */}
       <section className="py-16 px-4 bg-gradient-to-r from-tsotra-orange/20 to-tsotra-red/20">

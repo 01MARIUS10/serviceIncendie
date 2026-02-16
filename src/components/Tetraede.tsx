@@ -22,7 +22,7 @@ export default function Tetraede({ page = null }: TetraedeProps) {
   // On initialise l'état directement avec l'offset de départ de l'animation
   const [rotationX, setRotationX] = useState(targetX - 360);
   const [rotationY, setRotationY] = useState(targetY - 1440);
-  const [fireIntensity, setFireIntensity] = useState(0);
+  // const [fireIntensity, setFireIntensity] = useState(0);
   const [faceInfo, setFaceInfo] = useState<{ id: number, name: string, color: string }[]>([]);
   const [ready, setReady] = useState(false);
   const [initialized, setInitialized] = useState(false);
@@ -217,7 +217,7 @@ export default function Tetraede({ page = null }: TetraedeProps) {
     >
       <div className="relative max-w-[550px] max-h-[550px] h-full w-full">
         <div ref={shaderMaskRef} className="absolute inset-0 w-full h-full z-5 pointer-events-none">
-          {/* <ShaderFire intensity={fireIntensity} /> */}
+          <ShaderFire intensity={0.5} /> 
         </div>
         <div
           ref={containerRef}
